@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "schemaVersion": 39,
+  "uid": "host-monitoring",
+  "folder": "Host Machine Monitoring",
+  "title": "Host Monitoring Dashboard",
+  "timezone": "browser",
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "System Uptime (s)",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "node_time_seconds - node_boot_time_seconds",
+          "refId": "A",
+          "legendFormat": "Uptime"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "CPU Cores",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "count(count(node_cpu_seconds_total) by (cpu))",
+          "refId": "A",
+          "legendFormat": "CPU Cores"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Processes Running",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "node_procs_running",
+          "refId": "A",
+          "legendFormat": "Processes"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "System Load (1m)",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "node_load1",
+          "refId": "A",
+          "legendFormat": "Load 1m"
+        }
+      ]
+    },
+
+    {
+      "type": "timeseries",
+      "title": "CPU Usage (%)",
+      "gridPos": { "x": 0, "y": 4, "w": 16, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "expr": "100 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100",
+          "refId": "A",
+          "legendFormat": "CPU Usage"
+        }
+      ]
+    },
+
+    {
+      "type": "piechart",
+      "title": "CPU State Distribution",
+      "gridPos": { "x": 16, "y": 4, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(node_cpu_seconds_total{mode=\"user\"}[1m]))",
+          "refId": "A",
+          "legendFormat": "User"
+        },
+        {
+          "expr": "sum(rate(node_cpu_seconds_total{mode=\"system\"}[1m]))",
+          "refId": "B",
+          "legendFormat": "System"
+        },
+        {
+          "expr": "sum(rate(node_cpu_seconds_total{mode=\"iowait\"}[1m]))",
+          "refId": "C",
+          "legendFormat": "IO Wait"
+        },
+        {
+          "expr": "sum(rate(node_cpu_seconds_total{mode=\"idle\"}[1m]))",
+          "refId": "D",
+          "legendFormat": "Idle"
+        }
+      ]
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Memory Usage (%)",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+          "refId": "A",
+          "legendFormat": "Memory Usage"
+        }
+      ]
+    },
+
+    {
+      "type": "timeseries",
+      "title": "Network Traffic (RX vs TX)",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total[1m])",
+          "refId": "A",
+          "legendFormat": "Receive - {{device}}"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total[1m])",
+          "refId": "B",
+          "legendFormat": "Transmit - {{device}}"
+        }
+      ]
+    },
+
+    {
+      "type": "timeseries",
+      "title": "System Load Average (1m / 5m / 15m)",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "expr": "node_load1",
+          "refId": "A",
+          "legendFormat": "Load 1m"
+        },
+        {
+          "expr": "node_load5",
+          "refId": "B",
+          "legendFormat": "Load 5m"
+        },
+        {
+          "expr": "node_load15",
+          "refId": "C",
+          "legendFormat": "Load 15m"
+        }
+      ]
+    }
+  ]
+}
