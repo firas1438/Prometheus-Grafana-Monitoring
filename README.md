@@ -108,15 +108,7 @@ Slack notifications received during the tests (`HostDown` and `HighCpuUsage`), n
 
 ## Flow Summary
 
-```
-Host Machine
-    ↓
-Node Exporter
-    ↓
-Prometheus → Alertmanager → Slack
-    ↓
-Grafana
-```
+![Flow diagram](https://i.imgur.com/1WkbSKy.png)
 
 Prometheus scrapes metrics from Node Exporter every 15 seconds and stores them in its time-series database. Grafana queries and visualizes that data. Prometheus also evaluates the alert rules and sends firing alerts to Alertmanager, which notifies Slack.
 
