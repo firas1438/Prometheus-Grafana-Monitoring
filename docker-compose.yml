@@ -5,6 +5,7 @@ services:
     image: prom/prometheus:v3.5.0
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
@@ -21,9 +22,21 @@ services:
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
+      - /:/host:ro
     pid: host
     expose:
       - "9100"
+    networks:
+      - monitoring
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    secrets:
+      - slack_webhook_url
+    ports:
+      - "9093:9093"
     networks:
       - monitoring
 
@@ -41,6 +54,10 @@ services:
 volumes:
   prometheus_data:
   grafana_data:
+
+secrets:
+  slack_webhook_url:
+    file: ./alertmanager/slack_webhook_url
 
 networks:
   monitoring:
